@@ -1,0 +1,32 @@
+ttcdt-cgi-thr (formerly AOV CGI Throttler)
+ttcdt <dev@triptico.com>
+This software is released under the public domain.
+
+This is a program to be used as a front-end for CGIs that keeps track
+of simultaneous connections and starts generating 503 Service Unavaiable
+HTTP errors if a specified threshold is overpassed.
+
+Usage
+-----
+
+Say you have a CGI named g.cgi, with its first line being
+
+ #!/usr/bin/python
+
+Rename it to g2.cgi, and create a new CGI stub called g.cgi containing
+
+ #!/bin/sh
+ exec /usr/local/bin/ttcdt-cgi-thr ${REMOTE_ADDR} /usr/bin/python g2.cgi
+
+This way ttcdt-cgi-thr keeps account of each connection and, if the
+default maximum number of simultaneous connections per IP is overpassed
+(changeable by using the -m command line option), it returns immediately
+with an HTTP 503 error. Otherwise, the CGI is called as always.
+
+A time window and other options are configurable; execute the program
+with no arguments to see them. The log file is kept by default under
+the lighttpd log folder, so you probably want to change it if you use
+a different web server.
+
+This is a fork of the abandoned aov-cgi-thr software by Angel Ortega. The
+development team wants to thank him for it.
